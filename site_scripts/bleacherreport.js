@@ -1,19 +1,25 @@
-console.log("bleacher report script loaded");
-chrome.browserAction.onClicked.addListener(function(tab) {
-    console.log("bleacher");
-    baseUrl = tab.url + "/page/";
-    numSlides = 15 - 2;
-    lastIndex = numSlides + 1;
+// Content script runs on the page itself
+console.log("bleacher report script loaded------------");
+winLoc = window.location;
+url = winLoc.protocol + "//" + winLoc.host + winLoc.pathname;
+baseUrl = url + "/page/";
+pageCount = parseInt(document.getElementsByClassName("paginators_page-count")[0].textContent);
+extraEndPages = 10;
+lastIndex = pageCount - extraEndPages;
+startIndex = 2; // starts at 2
 
-    ///^[1-9][0-9]*$/
-    //chrome.extension.getBackgroundPage().console.log(tab);
-    console.log(tab.url);
-    currentUrl = tab.url;
-    //chrome.extension.getBackgroundPage().console.log(tab);
-    console.log(tab);
-    ChromeTabs = chrome.tabs;
-    ChromeTabs.getCurrent().remove();
-    for (var i=2;i <= lastIndex;i++) {
-      ChromeTabs.create({url:"http://google.com", active: false});
-    }
+// this gets returned to the executeScript callk
+result = {
+  startIndex: 2,
+  endIndex: pageCount - extraEndPages,
+  baseUrl: baseUrl
+}
+/*
+///^[1-9][0-9]*$/
+chrome.tabs.getCurrent(function(tab) {
+  chrome.tabs.remove(tab.id);
 });
+for (var i=startIndex; i <= lastIndex; i++) {
+  ChromeTabs.create({url: baseUrl + i.toString(), active: false});
+}
+*/
